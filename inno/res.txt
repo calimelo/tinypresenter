@@ -1,0 +1,27 @@
+
+1 VERSIONINFO
+FILEVERSION 1,0,3,0
+PRODUCTVERSION 1,0,3,0
+FILEOS 0x40004
+FILETYPE 0x1
+{
+BLOCK "StringFileInfo"
+{
+	BLOCK "040904b0"
+	{
+		VALUE "CompanyName", "tkgdata"
+		VALUE "ProductName", "tinypresenter"
+		VALUE "FileDescription", "made with love"
+		VALUE "FileVersion", "1.0.3"
+		VALUE "ProductVersion", "1.0.3"
+		VALUE "OriginalFilename", "tinypresenter.exe"
+		VALUE "InternalName", "tinypresenter"
+		VALUE "LegalCopyright", "Copyright tkgdata."
+	}
+}
+
+BLOCK "VarFileInfo"
+{
+	VALUE "Translation", 0x0409 0x04B0  
+}
+}

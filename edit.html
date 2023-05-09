@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tinypresenter 📑</title>
+
+    <style type="text/css">
+      body {
+        background-color: #f1f2f6;
+        color: #222f3e;
+        font-family: 'Ruda', 'Arial', sans-serif;
+        font-size: 1.25em;
+        width: 100%;
+        margin: 0;
+        transition: all 0.5s ease;
+      }
+
+      *:focus {
+        outline: none;
+      }
+
+      textarea {
+        border: none;
+        padding: 25px 25px 25px 25px;
+        resize: none;
+        width: calc(100% - 50px);
+        font-size: 1.5em;
+        border-radius: 15px;
+      }
+
+      #submit-button,
+      #deck p {
+        cursor: pointer;
+        /* add transition: opacity 0.6s linear; */
+        transition: opacity 0.6s linear;
+      }
+
+      #submit-button:active,
+      #deck p:active {
+        opacity: 0.5;
+      }
+
+      #submit-button {
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        margin: 0px 25px 25px 25px;
+        border-radius: 5px;
+        background-color: lightblue;
+        color: white;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+      #submit-button:hover {
+        background-color: cornflowerblue;
+        cursor: pointer;
+      }
+      #submit-button2 {
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        margin: 0px 25px 25px 25px;
+        border-radius: 5px;
+        background-color: lightgreen;
+        color: white;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+      #submit-button2:hover {
+        background-color: green;
+        cursor: pointer;
+      }
+      #submit-button3 {
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        margin: 0px 25px 25px 25px;
+        border-radius: 5px;
+        background-color: orange;
+        color: white;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+      #submit-button3:hover {
+        background-color: red;
+        cursor: pointer;
+      }
+      #viewbuton {
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        margin: 0px 25px 25px 25px;
+        border-radius: 5px;
+        background-color: lightsalmon;
+        color: white;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+      #viewbuton:hover {
+        background-color: salmon;
+        cursor: pointer;
+      }
+      #aciklamabuton {
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        margin: 0px 25px 25px 25px;
+        border-radius: 5px;
+        background-color: lightgray;
+        color: gray;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+      #aciklamabuton:hover {
+        background-color: grey;
+        cursor: pointer;
+      }
+      #butondiv {
+        text-align: center;
+        padding: 0px 25px 0px 25px;
+      }
+      #aciklama {
+        border: none;
+        resize: none;
+        font-size: 0.8em;
+      }
+      #textareadiv {
+        margin: 0px 25px 0px 25px;
+      }
+      #aciklamadiv {
+        margin: 0px 25px 0px 25px;
+        width: 95%;
+        color: orangered;
+      }
+
+      #deck {
+        padding: 0px 25px 0px 25px;
+      }
+      div.hidden {
+        opacity: 0;
+        transition: opacity 0.6s linear;
+        visibility: hidden;
+        display: none;
+      }
+      div.shown {
+        opacity: 1;
+        transition: opacity 0.6s linear;
+        visibility: visible;
+        display: block;
+      }
+      div.sticky {
+        position: -webkit-sticky; /* Safari */
+        position: sticky;
+        top: 0;
+      }
+      div.header {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background-color: #f1f1f1;
+        color: black;
+        text-align: center;
+      }
+      #deck p {
+        background-color: white;
+        padding-left: 15px;
+        padding-top: 5px;
+        border-radius: 15px;
+        margin-top: 0px;
+      }
+      /* mouseover deck p */
+      #deck p:hover {
+        background-color: orange;
+      }
+
+      #viewdiv {
+        overflow: auto;
+        padding: 5px 25px 0px 25px;
+      }
+      #viewpage {
+        /* border: none; */
+
+        background-color: black;
+      }
+      #buttongroup {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewdiv">
+      <iframe id="viewpage" src=""></iframe>
+    </div>
+    <div class="sticky header" id="buttongroup">
+      <div id="submit-button2" onclick="cleartext()">🌱</div>
+
+      <div id="submit-button" onclick="handleSubmit()">🚀</div>
+      <div id="submit-button3" onclick="deleteslide()">🗑</div>
+      <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
+      <div id="viewbuton" onclick="handleView()">🧐</div>
+    </div>
+    <div class="sticky header">
+      <div id="textareadiv">
+        <textarea
+          class="sticky"
+          rows="8"
+          placeholder="Markdown/HTML"></textarea>
+      </div>
+    </div>
+
+    <div id="aciklamadiv">
+      <div id="aciklama"></div>
+    </div>
+
+    <div id="deck"></div>
+
+    <script type="text/javascript">
+      if (localStorage.getItem('admin') === null) {
+        localStorage.setItem('admin', 'false');
+      }
+      let theUrl = window.location.href;
+      let mainURL = theUrl.replace('/edit', '');
+      //set view page
+      document.getElementById('viewpage').src = mainURL;
+      document.getElementById('viewpage').width = '100%';
+      document.getElementById('viewpage').height = '300';
+
+      //   console.log(theUrl);
+      // check cookie
+      // check localstorage for edit mode
+
+      let localdata = localStorage.getItem('admin');
+
+      if (localdata === 'true') {
+        // show the page
+        document.querySelector('body').style.display = 'block';
+      } else {
+        // show the page
+        const password = prompt('Password');
+        const x = passCheck(password);
+        if (x) {
+          localStorage.setItem('admin', 'true');
+          //   console.log('true');
+        } else {
+          localStorage.setItem('admin', 'false');
+          //   console.log('false');
+        }
+      }
+
+      // send password to api
+      function passCheck(password) {
+        let myurl = window.location.href;
+        if (myurl[myurl.length - 1] === '/') {
+          myurl = myurl.slice(0, -1);
+        }
+        myurl = myurl + '/password/' + password;
+        //remove double slash
+
+        // console.log('myurl', myurl);
+
+        fetch(myurl, {
+          method: 'GET',
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            // console.log(data);
+            if (data === 'OK') {
+              localStorage.setItem('admin', 'true');
+              document.querySelector('body').style.display = 'block';
+
+              return true;
+            } else {
+              // password is wrong
+              // show the page
+              document.querySelector('body').style.display = 'none';
+              return false;
+            }
+          });
+      }
+
+      let shown = false;
+      let viewshown = false;
+      function handleAciklama() {
+        //show
+        if (!shown) {
+          document.querySelector('#aciklama').innerHTML = aciklamaen;
+          shown = true;
+          // change button text to -
+          document.querySelector('#aciklamabuton').innerHTML = '💁';
+          // add class hidden
+          document.querySelector('#aciklamadiv').classList.add('shown');
+          document.querySelector('#aciklamadiv').classList.remove('hidden');
+        } else {
+          shown = false;
+          document.querySelector('#aciklamadiv').classList.add('hidden');
+          document.querySelector('#aciklamadiv').classList.remove('shown');
+          document.querySelector('#aciklama').innerHTML = '';
+          // change button text to +
+          document.querySelector('#aciklamabuton').innerHTML = '🤷';
+        }
+      }
+
+      function handleView() {
+        //show
+        let classes = document.querySelector('#viewdiv').classList;
+        if (!viewshown) {
+          document.querySelector('#viewdiv').classList.add('hidden');
+          document.querySelector('#viewdiv').classList.remove('shown');
+          viewshown = true;
+          document.querySelector('#viewbuton').innerHTML = '🫣';
+        } else {
+          document.querySelector('#viewdiv').classList.add('shown');
+          document.querySelector('#viewdiv').classList.remove('hidden');
+          viewshown = false;
+          document.querySelector('#viewbuton').innerHTML = '🧐';
+        }
+      }
+
+      const aciklamaen = `
+          <div>
+            <h1>Markdown</h1>
+            <h2>Header</h2>
+            <p># Header Level 1</p>
+            <p>## Header Level 2</p>
+
+            <h2>Paragraph</h2>
+            <p>Paragraph 1</p>
+            <p>Paragraph 2</p>
+
+            <h2>Pictures</h2>
+            <p>![Apple](http://localhost:8000/images/1.jpg)</p>
+
+            <h2>Link</h2>
+            <p>[Link](http://wikipedia.org)</p>
+
+            <h2>Video</h2>
+            <p>[Video](https://www.youtube.com/watch?v=9bZkp7q19f0)</p>
+
+            <h2>Youtube</h2>
+            <p>[Youtube](https://www.youtube.com/watch?v=9bZkp7q19f0)</p>
+
+            <h2>Code</h2>
+            <p>Code 1</p>
+            <p>Code 2</p>
+
+            <h2>Blockquote</h2>
+            <p>Blockquote 1</p>
+            <p>Blockquote 2</p>
+
+            <h2>Horizontal Rule</h2>
+            <p>---</p>
+
+            <h2>Italic</h2>
+
+            <p>*Italic*</p>
+
+            <h2>Bold</h2>
+
+            <p>**Bold**</p>
+
+            <h2>Strikethrough</h2>
+
+            <p>~~Strikethrough~~</p>
+
+            <h2>Unordered List</h2>
+
+            <p>* Unordered List 1</p>
+            <p>* Unordered List 2</p>
+
+            <h2>Ordered List</h2>
+
+            <p>1. Ordered List 1</p>
+            <p>1. Ordered List 2</p>
+
+            <h2>Table</h2>
+
+            <p>| Table 1 | Table 2 |</p>
+
+            <h2>Checkbox</h2>
+
+            <p>- [ ] Checkbox 1</p>
+
+
+            <h2>Footnote</h2>
+
+            <p>[^not]</p>
+          </div>
+        `;
+
+      const textarea = document.querySelector('textarea');
+      const deck = document.querySelector('#deck');
+      // get the slides from backend api localhost:8000/slides
+      //get the server url
+
+      function getSlides() {
+        let xmlHttp = new XMLHttpRequest();
+        let myurl = window.location.href;
+        if (myurl[myurl.length - 1] !== '/') {
+          myurl = myurl + '/';
+        }
+        myurl = myurl + 'slides';
+        xmlHttp.open('GET', myurl, false); // false for synchronous request
+        xmlHttp.send(null);
+        // console.log(xmlHttp.responseText);
+        return JSON.parse(xmlHttp.responseText);
+      }
+      let slides = getSlides();
+      slides = JSON.parse(slides);
+      // convert the slides to an array
+      slides = Object.values(slides);
+
+      //   console.log(slides);
+
+      function handleSubmit() {
+        if (textarea.value.indexOf('🗑' > -1)) {
+          //   slides.unshift(textarea.value);
+          //add to the end
+          //remove this slide
+          let index = slides.indexOf(textarea.value);
+          if (index > -1) {
+            slides.splice(index, 1);
+          }
+          updateDeck();
+          sendUpdateSlideRequest(textarea.value);
+        }
+        // add the textarea value to the slides array
+        if (textarea.value.length > 0 && textarea.value.indexOf('🗑' === -1)) {
+          //   slides.unshift(textarea.value);
+          //add to the end
+          slides.push(textarea.value);
+          updateDeck();
+          sendUpdateSlideRequest(textarea.value);
+        }
+        textarea.value = '';
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+
+      function cleartext() {
+        textarea.value = '';
+        updateDeck();
+      }
+      function deleteslide() {
+        // add the textarea value to the slides array
+        if (textarea.value.length > 0) {
+          sendUpdateSlideRequest(textarea.value + '🗑');
+        }
+        textarea.value = '';
+        // refresh the deck
+
+        updateDeck();
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+
+      function updateDeck() {
+        deck.innerHTML = '';
+
+        slides.forEach((markdown) => {
+          const slideNode = document.createElement('p');
+          // add slide number
+          slideNode.innerText = slides.indexOf(markdown) + 1 + '. ' + markdown;
+
+          //   slideNode.innerText = markdown;
+          slideNode.onclick = () => {
+            sendUpdateSlideRequest(markdown);
+          };
+          // check if deck includes markdown
+          if (!deck.innerHTML.includes(markdown)) {
+            deck.appendChild(slideNode);
+          }
+        });
+        // refresh the deck after 1 second
+      }
+
+      function sendUpdateSlideRequest(markdown) {
+        const { protocol } = window.location;
+        const url = `${protocol}/api/updateSlide?markdown=${encodeURIComponent(
+          markdown,
+        )}`;
+        const xhttp = new XMLHttpRequest();
+
+        xhttp.open('GET', url, true);
+        xhttp.send();
+        // show the markdown in the textarea
+        textarea.value = markdown;
+      }
+
+      (() => {
+        updateDeck();
+      })();
+    </script>
+  </body>
+</html>
