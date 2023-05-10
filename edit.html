@@ -195,7 +195,6 @@
     </div>
     <div class="sticky header" id="buttongroup">
       <div id="submit-button2" onclick="cleartext()">🌱</div>
-
       <div id="submit-button" onclick="handleSubmit()">🚀</div>
       <div id="submit-button3" onclick="deleteslide()">🗑</div>
       <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
@@ -217,6 +216,7 @@
     <div id="deck"></div>
 
     <script type="text/javascript">
+      const textarea = document.querySelector('textarea');
       if (localStorage.getItem('admin') === null) {
         localStorage.setItem('admin', 'false');
       }
@@ -302,11 +302,7 @@
         }
       }
 
-      let view = localStorage.getItem('view');
-      console.log('view', view);
-
-      let viewshown = view;
-      console.log('viewshown', viewshown);
+      let viewshown = localStorage.getItem('view');
 
       function handleView(setnow = false) {
         //get view from localstorage
@@ -406,7 +402,6 @@
           </div>
         `;
 
-      const textarea = document.querySelector('textarea');
       const deck = document.querySelector('#deck');
       // get the slides from backend api localhost:8000/slides
       //get the server url
@@ -505,6 +500,7 @@
         xhttp.send();
         // show the markdown in the textarea
         textarea.value = markdown;
+        localStorage.setItem('markdown', markdown);
       }
 
       (() => {
