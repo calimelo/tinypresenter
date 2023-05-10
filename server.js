@@ -249,8 +249,7 @@ iframe {
   let slidenames = Object.keys(myslides);
   let headless = true;
   const browser = await puppeteer.launch({
-    headless: headless,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    headless: 'new',
   });
   for (const key in myslides) {
     if (Object.prototype.hasOwnProperty.call(myslides, key)) {
