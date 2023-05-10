@@ -4,7 +4,8 @@ const appname = package.name;
 
 // const author = 'Dr.Kaan';
 const puppeteer = require('puppeteer');
-const merge = require('easy-pdf-merge');
+const PDFMerger = require('pdf-merger-js');
+
 const express = require('express');
 const http = require('http');
 const showdown = require('showdown');
@@ -244,9 +245,13 @@ iframe {
   };
   let mystyle = style.replace(/(\r\n|\n|\r)/gm, '');
   mystyle = mystyle.replace(/\s+/g, ' ').trim();
-
+  const merger = new PDFMerger();
   let slidenames = Object.keys(myslides);
-  const browser = await puppeteer.launch();
+  let headless = true;
+  const browser = await puppeteer.launch({
+    headless: headless,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
   for (const key in myslides) {
     if (Object.prototype.hasOwnProperty.call(myslides, key)) {
       html = converter.makeHtml(myslides[key]);
@@ -263,29 +268,22 @@ iframe {
       await page.addStyleTag({ content: mystyle });
       await page.emulateMediaType('screen');
       //make pdf presentation
-
-      await page.pdf(pdfoptions);
+      await merger.add(await page.pdf(pdfoptions));
     }
   }
   //convert html to pdf
-
+  await merger.save(path);
   await browser.close();
-  //merge pdfs
 
-  let pdfs = [];
+  //remove slides using slidenames
   for (let i = 0; i < slidenames.length; i += 1) {
-    pdfs.push(`PDF/${slidenames[i]}.pdf`);
+    fs.unlinkSync(`PDF/${slidenames[i]}.pdf`, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
   }
-  merge(pdfs, path, function (err) {
-    if (err) {
-      return console.log(err);
-    }
-    //delete pdfs
-    for (let i = 0; i < slidenames.length; i += 1) {
-      fs.unlinkSync(`PDF/${slidenames[i]}.pdf`);
-    }
-    console.log('Successfully merged!');
-  });
 
   return path;
 }
