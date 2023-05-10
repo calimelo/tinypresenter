@@ -114,6 +114,21 @@
         background-color: grey;
         cursor: pointer;
       }
+      #exportbuton {
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        margin: 0px 25px 25px 25px;
+        border-radius: 5px;
+        background-color: lightcoral;
+        color: gray;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+      #exportbuton:hover {
+        background-color: coral;
+        cursor: pointer;
+      }
       #butondiv {
         text-align: center;
         padding: 0px 25px 0px 25px;
@@ -199,6 +214,7 @@
       <div id="submit-button3" onclick="deleteslide()">🗑</div>
       <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
       <div id="viewbuton" onclick="handleView(true)">🧐</div>
+      <div id="exportbuton" onclick="exportpdf()">💾</div>
     </div>
     <div class="sticky header">
       <div id="textareadiv">
@@ -422,6 +438,19 @@
       slides = JSON.parse(slides);
       // convert the slides to an array
       slides = Object.values(slides);
+
+      function exportpdf() {
+        let xmlHttp = new XMLHttpRequest();
+        let myurl = window.location.href;
+        if (myurl[myurl.length - 1] !== '/') {
+          myurl = myurl + '/';
+        }
+        myurl = myurl + 'exportpdf';
+        xmlHttp.open('GET', myurl, false); // false for synchronous request
+        xmlHttp.send(null);
+        // console.log(xmlHttp.responseText);
+        console.log('exporting pdf');
+      }
 
       //   console.log(slides);
 

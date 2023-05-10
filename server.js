@@ -3,7 +3,8 @@ const version = package.version;
 const appname = package.name;
 
 // const author = 'Dr.Kaan';
-
+const puppeteer = require('puppeteer');
+const merge = require('easy-pdf-merge');
 const express = require('express');
 const http = require('http');
 const showdown = require('showdown');
@@ -126,6 +127,167 @@ const converter = new showdown.Converter();
 
 if (password !== 'none') {
   LL(`🔐 ${password}`);
+}
+
+async function convertslidestoPDF(slides, name) {
+  if (!name) {
+    name = 'TinyPresenter.pdf';
+  } else {
+    name = `${name}.pdf`;
+  }
+  //set path to save pptx file
+  //check if PPTX folder exists
+  //if not create it
+  if (!fs.existsSync('PDF')) {
+    fs.mkdirSync('PDF');
+  }
+
+  const path = `PDF/${name}`;
+
+  const style = `
+body {
+  background-color: #f1f2f6;
+  color: #222f3e;
+  font-family: 'Ruda', 'Arial', sans-serif;
+}
+
+h1 {
+  margin-top: 20vh;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+h2 {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+h3 {
+  visibility: visible;
+  font-size: 1.5em;
+}
+h4 {
+  visibility: visible;
+  font-size: 1.3em;
+}
+h5 {
+  visibility: visible;
+  font-size: 1.2em;
+}
+
+p {
+  margin-bottom: 0px;
+}
+
+#slide {
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  padding: 20px;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 5vmin;
+  display: inline-block;
+}
+img {
+  /* max-width: //90% of the screen; */
+  width: 90vw;
+  height: 90vh;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0%;
+  margin-bottom: 0%;
+  border: none;
+  object-fit: contain;
+}
+iframe {
+  display: block;
+  margin: 1%;
+  border: none;
+  max-width: 95vw;
+  max-height: 95vh;
+  width: 95vw;
+  height: 95vh;
+  object-fit: contain;
+}
+`;
+  //slides is the json object
+  //it has 2 keys: slidename and slidetext
+  //slidename is the name of the slide
+  //slidetext is the text of the slide
+  //convert slides to html
+  let browserheight = 1200;
+  let browserwidth = 1600;
+
+  let myslides = JSON.parse(slides);
+  let html = '';
+  let pdfoptions = {
+    path: path,
+    format: 'A6',
+    scale: 2,
+    landscape: true,
+    printBackground: false,
+    margin: {
+      top: '0cm',
+      bottom: '0cm',
+      left: '0cm',
+      right: '0cm',
+    },
+  };
+  let mystyle = style.replace(/(\r\n|\n|\r)/gm, '');
+  mystyle = mystyle.replace(/\s+/g, ' ').trim();
+
+  let slidenames = Object.keys(myslides);
+  const browser = await puppeteer.launch();
+  for (const key in myslides) {
+    if (Object.prototype.hasOwnProperty.call(myslides, key)) {
+      html = converter.makeHtml(myslides[key]);
+      pdfoptions.path = `PDF/${key}.pdf`;
+      // console.log(html);
+
+      const page = await browser.newPage();
+      await page.setViewport({
+        width: browserwidth,
+        height: browserheight,
+        deviceScaleFactor: 2,
+      });
+      await page.setContent(html);
+      await page.addStyleTag({ content: mystyle });
+      await page.emulateMediaType('screen');
+      //make pdf presentation
+
+      await page.pdf(pdfoptions);
+    }
+  }
+  //convert html to pdf
+
+  await browser.close();
+  //merge pdfs
+
+  let pdfs = [];
+  for (let i = 0; i < slidenames.length; i += 1) {
+    pdfs.push(`PDF/${slidenames[i]}.pdf`);
+  }
+  merge(pdfs, path, function (err) {
+    if (err) {
+      return console.log(err);
+    }
+    //delete pdfs
+    for (let i = 0; i < slidenames.length; i += 1) {
+      fs.unlinkSync(`PDF/${slidenames[i]}.pdf`);
+    }
+    console.log('Successfully merged!');
+  });
+
+  return path;
 }
 
 async function writeSlides(slides, dbwrite = false) {
@@ -253,6 +415,17 @@ app.get('/edit/password/:password', (req, res) => {
   } else {
     res.json('NO');
   }
+});
+
+app.get('/save', (req, res) => {
+  writeSlides(req.query.slides, dbwrite);
+  res.json('OK');
+});
+
+app.get('/edit/exportpdf', (req, res) => {
+  const name = 'tinypresenter';
+  convertslidestoPDF(slides, name);
+  res.json('OK');
 });
 
 app.get('/edit/slides', (req, res) => {
