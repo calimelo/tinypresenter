@@ -199,7 +199,7 @@
       <div id="submit-button" onclick="handleSubmit()">🚀</div>
       <div id="submit-button3" onclick="deleteslide()">🗑</div>
       <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
-      <div id="viewbuton" onclick="handleView()">🧐</div>
+      <div id="viewbuton" onclick="handleView(true)">🧐</div>
     </div>
     <div class="sticky header">
       <div id="textareadiv">
@@ -281,7 +281,7 @@
       }
 
       let shown = false;
-      let viewshown = false;
+
       function handleAciklama() {
         //show
         if (!shown) {
@@ -302,21 +302,38 @@
         }
       }
 
-      function handleView() {
+      let view = localStorage.getItem('view');
+      console.log('view', view);
+
+      let viewshown = view;
+      console.log('viewshown', viewshown);
+
+      function handleView(setnow = false) {
+        //get view from localstorage
+
         //show
         let classes = document.querySelector('#viewdiv').classList;
-        if (!viewshown) {
+        if (viewshown === false || viewshown === 'false') {
           document.querySelector('#viewdiv').classList.add('hidden');
           document.querySelector('#viewdiv').classList.remove('shown');
           viewshown = true;
+          if (setnow) {
+            console.log('setting view to false');
+            localStorage.setItem('view', 'false');
+          }
           document.querySelector('#viewbuton').innerHTML = '🫣';
         } else {
           document.querySelector('#viewdiv').classList.add('shown');
           document.querySelector('#viewdiv').classList.remove('hidden');
           viewshown = false;
+          if (setnow) {
+            localStorage.setItem('view', 'true');
+            console.log('setting view to true');
+          }
           document.querySelector('#viewbuton').innerHTML = '🧐';
         }
       }
+      handleView();
 
       const aciklamaen = `
           <div>
