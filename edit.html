@@ -202,12 +202,38 @@
         flex-basis: 0;
         flex-shrink: 0;
       }
+      #uuidselect {
+        /* appearance: none; */
+        outline: 0;
+        border: 0;
+        box-shadow: none;
+  
+        flex: 1;
+        padding: 15px 15px 15px 15px;
+        border-radius: 15px;
+        color: #fff;
+  
+        cursor: pointer;
+        color:lightcyan;
+
+      }
+    
+#selectdiv{
+    
+    /* align to center of the page */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-shrink: 0;
+    padding: 0px 25px 25px 25px;
+    
+}
     </style>
   </head>
   <body>
-    <div id="viewdiv">
-      <iframe id="viewpage" src=""></iframe>
-    </div>
+    
     <div class="sticky header" id="buttongroup">
       <div id="submit-button2" onclick="cleartext()">🌱</div>
       <div id="submit-button" onclick="handleSubmit()">🚀</div>
@@ -215,6 +241,9 @@
       <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
       <div id="viewbuton" onclick="handleView(true)">🧐</div>
       <div id="exportbuton" onclick="exportpdf()">💾</div>
+    </div>
+    <div id="viewdiv">
+      <iframe id="viewpage" src=""></iframe>
     </div>
     <div class="sticky header">
       <div id="textareadiv">
@@ -230,6 +259,9 @@
     </div>
 
     <div id="deck"></div>
+    <div id="selectdiv">
+        <select id="uuidselect" onchange="handleUUIDChange()">
+    </div>
 
     <script type="text/javascript">
       const textarea = document.querySelector('textarea');
@@ -421,6 +453,42 @@
       const deck = document.querySelector('#deck');
       // get the slides from backend api localhost:8000/slides
       //get the server url
+      function getUUIDS() {
+        let xmlHttp = new XMLHttpRequest();
+        let myurl = window.location.href;
+        if (myurl[myurl.length - 1] !== '/') {
+          myurl = myurl + '/';
+        }
+        myurl = myurl + 'getuuids';
+        xmlHttp.open('GET', myurl, false); // false for synchronous request
+        xmlHttp.send(null);
+        // console.log(xmlHttp.responseText);
+        const uuids= JSON.parse(xmlHttp.responseText);
+        // update the select element
+        const select = document.querySelector('#uuidselect');
+        uuids.forEach((uuid) => {
+          const option = document.createElement('option');
+          option.value = uuid;
+          option.innerHTML = uuid;
+          select.appendChild(option);
+        });
+      }
+        getUUIDS();
+
+        function handleUUIDChange() {
+            let uuid = document.querySelector('#uuidselect').value;
+        let xmlHttp = new XMLHttpRequest();
+        let myurl = window.location.href;
+        if (myurl[myurl.length - 1] !== '/') {
+          myurl = myurl + '/';
+        }
+        myurl = myurl + 'myuuid/' + uuid;
+        xmlHttp.open('GET', myurl, false); // false for synchronous request
+        xmlHttp.send(null);
+        // console.log(xmlHttp.responseText);
+        getSlides();
+        window.location.reload();
+      }
 
       function getSlides() {
         let xmlHttp = new XMLHttpRequest();
@@ -428,7 +496,7 @@
         if (myurl[myurl.length - 1] !== '/') {
           myurl = myurl + '/';
         }
-        myurl = myurl + 'slides';
+        myurl = myurl + 'slides' ;
         xmlHttp.open('GET', myurl, false); // false for synchronous request
         xmlHttp.send(null);
         // console.log(xmlHttp.responseText);

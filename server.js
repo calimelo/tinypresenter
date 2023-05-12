@@ -40,7 +40,7 @@ const file = options.file || 'none';
 const filePath = path.join(process.cwd(), file);
 const password = options.secret || 'none';
 let database = options.database || 'none';
-const newuuid = options.name || 'TinyPresenter';
+let newuuid = options.name || 'TinyPresenter';
 
 if (file !== 'none') {
   LL(`📓 ${filePath}`);
@@ -49,7 +49,7 @@ if (file !== 'none') {
 if (options.debug) {
   LD = LL;
 }
-let db;
+
 let dbwrite = false;
 let sek;
 let sekModel;
@@ -247,7 +247,7 @@ iframe {
   mystyle = mystyle.replace(/\s+/g, ' ').trim();
   const merger = new PDFMerger();
   let slidenames = Object.keys(myslides);
-  let headless = true;
+
   const browser = await puppeteer.launch({
     headless: 'new',
   });
@@ -323,6 +323,24 @@ async function writeSlides(slides, dbwrite = false) {
   }
   fs.writeFileSync('slides.json', slides);
 }
+
+async function getUUIDS() {
+  const uuids = await sekModel.findAll({
+    attributes: ['uuid'],
+    group: ['uuid'],
+  });
+  const myuuids = [];
+  for (let i = 0; i < uuids.length; i += 1) {
+    myuuids.push(uuids[i].dataValues.uuid);
+  }
+  return myuuids;
+}
+
+app.get('/edit/getuuids', async (req, res) => {
+  const uuids = await getUUIDS();
+  LD(uuids);
+  res.json(uuids);
+});
 
 // function to read pptx file
 async function readPptxFile(pptxfile) {
@@ -420,7 +438,8 @@ app.get('/save', (req, res) => {
 });
 
 app.get('/edit/exportpdf', (req, res) => {
-  const name = 'tinypresenter';
+  const name = newuuid || 'slides';
+  const slides = fs.readFileSync('slides.json', 'utf8');
   convertslidestoPDF(slides, name);
   res.json('OK');
 });
@@ -429,9 +448,28 @@ app.get('/edit/slides', (req, res) => {
   const myslides = fs.readFileSync('slides.json', 'utf8');
   res.json(myslides);
 });
-app.get('/slides', (req, res) => {
-  const myslides = fs.readFileSync('slides.json', 'utf8');
-  res.json(myslides);
+
+app.get('/edit/myuuid/:id', (req, res) => {
+  const myuuid = req.params.id;
+  newuuid = myuuid;
+  LD(`newuuid: ${newuuid}`);
+  // read slides from database
+  sekModel
+    .findAll({
+      where: {
+        uuid: myuuid,
+      },
+    })
+    .then((slides) => {
+      const slidesObj = {};
+      for (let i = 0; i < slides.length; i += 1) {
+        slidesObj[slides[i].dataValues.slidename] =
+          slides[i].dataValues.slidetext;
+      }
+      fs.writeFileSync('slides.json', JSON.stringify(slidesObj));
+    });
+
+  res.json('OK');
 });
 
 app.use('/images', express.static(path.join(process.cwd(), 'images')));
