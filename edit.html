@@ -54,7 +54,7 @@
         background-color: cornflowerblue;
         cursor: pointer;
       }
-      #submit-button2 {
+      #clearbutton {
         padding: 5px 5px 5px 5px;
         text-align: center;
         margin: 0px 25px 25px 25px;
@@ -65,23 +65,23 @@
         flex-basis: 0;
         flex-shrink: 0;
       }
-      #submit-button2:hover {
+      #clearbutton:hover {
         background-color: green;
         cursor: pointer;
       }
-      #submit-button3 {
+      #deletebutton {
         padding: 5px 5px 5px 5px;
         text-align: center;
         margin: 0px 25px 25px 25px;
         border-radius: 5px;
-        background-color: orange;
+        background-color: red;
         color: white;
         flex-grow: 1;
         flex-basis: 0;
         flex-shrink: 0;
       }
-      #submit-button3:hover {
-        background-color: red;
+      #deletebutton:hover {
+        background-color: darkred;
         cursor: pointer;
       }
       #viewbuton {
@@ -258,9 +258,6 @@
   <body>
     
     <div class="sticky header" id="buttongroup">
-      <div id="submit-button2" onclick="cleartext()">🌱</div>
-      <!-- <div id="submit-button" onclick="handleSubmit()">🚀</div> -->
-      <div id="submit-button3" onclick="deleteslide()">🗑</div>
       <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
       <div id="viewbuton" onclick="handleView(true)">🧐</div>
       <div id="exportbuton" onclick="exportpdf()">💾</div>
@@ -281,6 +278,10 @@
       <div id="aciklama"></div>
     </div>
     <div id="submit-button" onclick="handleSubmit()">🚀</div>
+    <div class="sticky header" id="buttongroup">
+        <div id="clearbutton" onclick="cleartext()">🌱</div>
+        <div id="deletebutton" onclick="deleteslide()">🗑</div>
+        </div>
     <div id="deck"></div>
     
     <div id="selectdiv">
