@@ -113,6 +113,20 @@ async function startdb() {
     createdAt: sequelize.INTEGER,
     updatedAt: sequelize.INTEGER,
   });
+  if (options.name) {
+    // if slides.json exists, read it and insert to database
+    if (fs.existsSync('slides.json')) {
+      const slides = JSON.parse(fs.readFileSync('slides.json', 'utf8'));
+      for (const slidename in slides) {
+        const slidetext = slides[slidename];
+        sekModel.create({
+          uuid: newuuid,
+          slidename: slidename,
+          slidetext: slidetext,
+        });
+      }
+    }
+  }
   sekModel.sync().then(() => {
     // read slides from database and write to slides.json
     sekModel
