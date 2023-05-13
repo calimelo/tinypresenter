@@ -1,6 +1,6 @@
-const package = require('./package.json');
-const version = package.version;
-const appname = package.name;
+const mypackage = require('./package.json');
+const version = mypackage.version;
+const appname = mypackage.name;
 
 // const author = 'Dr.Kaan';
 const puppeteer = require('puppeteer');

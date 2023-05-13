@@ -148,6 +148,23 @@
         cursor: pointer;
         animation: pulse 1s infinite;
       }
+
+      #genelbuton {
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        margin: 0px 25px 25px 25px;
+        border-radius: 5px;
+        background-color: lightsteelblue;
+        color: gray;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+      }
+      #genelbuton:hover {
+        background-color: steelblue;
+        cursor: pointer;
+        animation: pulse 1s infinite;
+      }
       #butondiv {
         text-align: center;
         padding: 0px 25px 0px 25px;
@@ -226,56 +243,49 @@
         outline: 0;
         border: 0;
         box-shadow: none;
-  
+
         flex: 1;
         padding: 15px 15px 15px 15px;
         border-radius: 15px;
-        
+
         font-size: 1em;
         background-color: #3e3e3e;
-  
+
         cursor: pointer;
-        color:orange;
+        color: orange;
         /* align text to center */
         text-align-last: center;
-
       }
-        #uuidselect:hover {
-            background-color: #3e3e3e;
-            color: white;
-            
-        }
+      #uuidselect:hover {
+        background-color: #3e3e3e;
+        color: white;
+      }
 
-        option {
-            background-color: #3e3e3e;
-            color: orange;
-            text-align-last: center;
-            padding: 5px 5px 5px 5px;
-        }
-    
-#selectdiv{
-    
-    /* align to center of the page */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    flex-basis: 0;
-    flex-shrink: 0;
-    padding: 0px 25px 25px 25px;
-    
-}
+      option {
+        background-color: #3e3e3e;
+        color: orange;
+        text-align-last: center;
+        padding: 5px 5px 5px 5px;
+      }
 
-/* add options centered */
-#uuidselect option{
-    text-align-last: center;
+      #selectdiv {
+        /* align to center of the page */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        flex-basis: 0;
+        flex-shrink: 0;
+        padding: 0px 25px 25px 25px;
+      }
 
-
-}
+      /* add options centered */
+      #uuidselect option {
+        text-align-last: center;
+      }
     </style>
   </head>
   <body>
-    
     <div class="sticky header" id="buttongroup">
       <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
       <div id="viewbuton" onclick="handleView(true)">🧐</div>
@@ -296,17 +306,26 @@
     <div id="aciklamadiv">
       <div id="aciklama"></div>
     </div>
-    <div id="submit-button" onclick="handleSubmit()">🚀</div>
     <div class="sticky header" id="buttongroup">
-        <div id="clearbutton" onclick="cleartext()">🌱</div>
-        <div id="deletebutton" onclick="deleteslide()">🗑</div>
-        </div>
-    <div id="deck"></div>
-    
-    <div id="selectdiv">
-        <select id="uuidselect" onchange="handleUUIDChange()">
+      <div id="clearbutton" onclick="cleartext()">🌱</div>
+      <div id="genelbuton" onclick="setHeader()">🧠</div>
+      <div id="genelbuton" onclick="setCode()">📃</div>
+      <div id="genelbuton" onclick="setIframe()">🔗</div>
+      <div id="genelbuton" onclick="setVideo()">🎥</div>
+      <div id="genelbuton" onclick="setYoutube()">▶️</div>
+      <div id="genelbuton" onclick="setImage()">📸</div>
+      <div id="deletebutton" onclick="deleteslide()">🗑</div>
     </div>
-    
+    <div id="submit-button" onclick="handleSubmit()">🚀</div>
+    <div id="deck"></div>
+
+    <div id="deck"></div>
+
+    <div id="selectdiv">
+      <select id="uuidselect" onchange="handleUUIDChange()">
+        <option value="0">Select a slide</option>
+      </select>
+    </div>
 
     <script type="text/javascript">
       const textarea = document.querySelector('textarea');
@@ -341,7 +360,92 @@
           //   console.log('false');
         }
       }
+      function setHeader() {
+        // show a popup ask for header
+        let header = prompt('HEADER');
+        if (header === null) {
+          return;
+        }
+        textarea.value = textarea.value + '\n' + '# ' + header;
+      }
+      function setYoutube() {
+        // show a popup ask for link
+        let link = prompt('YOUTUBE');
+        if (link === null) {
+          return;
+        }
+        if (link.includes('watch?v=')) {
+          link = link.replace('watch?v=', 'embed/');
+        }
+        if (link.includes('youtu.be')) {
+          link = link.replace('youtu.be', 'youtube.com/embed');
+        }
+        if (!link.includes('https://')) {
+          link = 'https://youtube.com/embed/' + link;
+        }
+        textarea.value =
+          textarea.value +
+          '\n' +
+          '<iframe src="' +
+          link +
+          '" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+      }
+      function setVideo() {
+        // show a popup ask for link
+        let myurl = window.location.href;
+        if (myurl[myurl.length - 1] === '/') {
+          myurl = myurl.slice(0, -1);
+        }
+        //remove edit from url
+        myurl = myurl.replace('/edit', '');
+        let mylink = myurl + '/images/';
+        let link = prompt('VIDEO', mylink);
 
+        if (link === null) {
+          return;
+        }
+        //enable autoplay
+        textarea.value =
+          textarea.value +
+          '\n' +
+          '<video src="' +
+          link +
+          '" autoplay muted></video>';
+      }
+      function setCode() {
+        // show a popup ask for link
+        let link = prompt('CODE');
+        if (link === null) {
+          return;
+        }
+        textarea.value =
+          textarea.value + '\n' + '<pre><code>' + link + '</code></pre>';
+      }
+      function setIframe() {
+        // show a popup ask for link
+        let link = prompt('IFRAME');
+        if (link === null) {
+          return;
+        }
+        textarea.value =
+          textarea.value + '\n' + '<iframe src="' + link + '"></iframe>';
+      }
+      function setImage() {
+        // show a popup ask for link use a default link
+        let myurl = window.location.href;
+        if (myurl[myurl.length - 1] === '/') {
+          myurl = myurl.slice(0, -1);
+        }
+        //remove edit from url
+        myurl = myurl.replace('/edit', '');
+        let mylink = myurl + '/images/';
+        let link = prompt('IMAGE', mylink);
+        if (link === null) {
+          return;
+        }
+        textarea.value =
+          textarea.value + '\n' + '<img src="' + link + '"></img>';
+      }
       // send password to api
       function passCheck(password) {
         let myurl = window.location.href;
@@ -508,11 +612,11 @@
         xmlHttp.open('GET', myurl, false); // false for synchronous request
         xmlHttp.send(null);
         // console.log(xmlHttp.responseText);
-        const uuiddata= JSON.parse(xmlHttp.responseText);
+        const uuiddata = JSON.parse(xmlHttp.responseText);
         const uuids = uuiddata.uuids;
         const newuuid = uuiddata.newuuid;
-        if (newuuid){
-            localStorage.setItem('uuid', newuuid);
+        if (newuuid) {
+          localStorage.setItem('uuid', newuuid);
         }
         // if it is empty, hide the select element
         if (uuids.length === 0) {
@@ -532,12 +636,11 @@
           select.value = uuid;
         }
       }
-        getUUIDS();
+      getUUIDS();
 
-     
-        function handleUUIDChange() {
-            let uuid = document.querySelector('#uuidselect').value;
-            localStorage.setItem('uuid', uuid);
+      function handleUUIDChange() {
+        let uuid = document.querySelector('#uuidselect').value;
+        localStorage.setItem('uuid', uuid);
         let xmlHttp = new XMLHttpRequest();
         let myurl = window.location.href;
         if (myurl[myurl.length - 1] !== '/') {
@@ -557,7 +660,7 @@
         if (myurl[myurl.length - 1] !== '/') {
           myurl = myurl + '/';
         }
-        myurl = myurl + 'slides' ;
+        myurl = myurl + 'slides';
         xmlHttp.open('GET', myurl, false); // false for synchronous request
         xmlHttp.send(null);
         // console.log(xmlHttp.responseText);
