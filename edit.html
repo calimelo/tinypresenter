@@ -487,6 +487,10 @@
         xmlHttp.send(null);
         // console.log(xmlHttp.responseText);
         const uuids= JSON.parse(xmlHttp.responseText);
+        // if it is empty, hide the select element
+        if (uuids.length === 0) {
+          document.querySelector('#uuidselect').style.display = 'none';
+        }
         // update the select element
         const select = document.querySelector('#uuidselect');
         uuids.forEach((uuid) => {
@@ -495,11 +499,18 @@
           option.innerHTML = uuid;
           select.appendChild(option);
         });
+        // set the selected option
+        const uuid = localStorage.getItem('uuid');
+        if (uuid) {
+          select.value = uuid;
+        }
       }
         getUUIDS();
 
+     
         function handleUUIDChange() {
             let uuid = document.querySelector('#uuidselect').value;
+            localStorage.setItem('uuid', uuid);
         let xmlHttp = new XMLHttpRequest();
         let myurl = window.location.href;
         if (myurl[myurl.length - 1] !== '/') {

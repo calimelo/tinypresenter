@@ -54,6 +54,19 @@ let dbwrite = false;
 let sek;
 let sekModel;
 
+function launchwebpage() {
+  let page = 'http://' + myip + ':' + port + '/edit';
+  var start =
+    process.platform == 'darwin'
+      ? 'open'
+      : process.platform == 'win32'
+      ? 'start'
+      : 'xdg-open';
+  require('child_process').exec(start + ' ' + page);
+}
+
+launchwebpage();
+
 async function startdb() {
   dbwrite = true;
   //add .sqlite extension to database file
@@ -325,6 +338,9 @@ async function writeSlides(slides, dbwrite = false) {
 }
 
 async function getUUIDS() {
+  if (database === 'none') {
+    return [];
+  }
   const uuids = await sekModel.findAll({
     attributes: ['uuid'],
     group: ['uuid'],
@@ -450,26 +466,34 @@ app.get('/edit/slides', (req, res) => {
 });
 
 app.get('/edit/myuuid/:id', (req, res) => {
-  const myuuid = req.params.id;
-  newuuid = myuuid;
-  LD(`newuuid: ${newuuid}`);
-  // read slides from database
-  sekModel
-    .findAll({
-      where: {
-        uuid: myuuid,
-      },
-    })
-    .then((slides) => {
-      const slidesObj = {};
-      for (let i = 0; i < slides.length; i += 1) {
-        slidesObj[slides[i].dataValues.slidename] =
-          slides[i].dataValues.slidetext;
-      }
-      fs.writeFileSync('slides.json', JSON.stringify(slidesObj));
-    });
+  // if db is not used, use uuid from url
+  if (database === 'none') {
+    newuuid = req.params.id;
+    LD(`newuuid: ${newuuid}`);
+    res.json('OK');
+  } else {
+    const myuuid = req.params.id;
 
-  res.json('OK');
+    newuuid = myuuid;
+    LD(`newuuid: ${newuuid}`);
+    // read slides from database
+    sekModel
+      .findAll({
+        where: {
+          uuid: myuuid,
+        },
+      })
+      .then((slides) => {
+        const slidesObj = {};
+        for (let i = 0; i < slides.length; i += 1) {
+          slidesObj[slides[i].dataValues.slidename] =
+            slides[i].dataValues.slidetext;
+        }
+        fs.writeFileSync('slides.json', JSON.stringify(slidesObj));
+      });
+
+    res.json('OK');
+  }
 });
 
 app.use('/images', express.static(path.join(process.cwd(), 'images')));

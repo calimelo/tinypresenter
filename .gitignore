@@ -9,7 +9,7 @@ temp /
 *.lock
 *.log
 *.db
-*.json
+slides.json
 *.pptx
 PPTX/
 PDF

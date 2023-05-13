@@ -1,0 +1,59 @@
+{
+  "name": "tinypresenter",
+  "version": "1.0.4",
+  "description": "present simply",
+  "main": "server.js",
+  "engines": {
+    "node": "16.16.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "watch": "nodemon server.js",
+    "buildnnnnnn1": "pkg . ",
+    "buildnnnnnn": "SET PKG_CACHE_PATH=temp && pkg --compress GZip -t node16-win --output ./build/tinypresenter.exe .",
+    "z": "npm run copyfile && SET PKG_CACHE_PATH=temp && pkg --options max-old-space-size=16384 --compress GZip -t node16-win --output ./build/tinypresenter.exe .",
+    "copyfile": "node ./copyfile.js"
+  },
+  "keywords": [
+    "realtime",
+    "slides",
+    "tutorial",
+    "socketio"
+  ],
+  "author": "Dr. Timur Kaan Gündüz",
+  "license": "MIT",
+  "dependencies": {
+    "airppt-parser": "^1.0.8",
+    "commander": "^10.0.1",
+    "express": "4.16.3",
+    "ip": "^1.1.8",
+    "pdf-merger-js": "^4.3.0",
+    "pkg": "^5.8.1",
+    "puppeteer": "^20.1.2",
+    "sequelize": "^6.31.1",
+    "showdown": "1.8.6",
+    "socket.io": "^2.1.1",
+    "sqlite3": "^5.1.6",
+    "textract": "^2.5.0"
+  },
+  "bin": "./server.js",
+  "pkg": {
+    "assets": [
+      "*.html",
+      "favicon/*",
+      "node_modules/sqlite3/lib/binding/napi-v6-win32-unknown-x64/node_sqlite3.node"
+    ],
+    "scripts": "server.js",
+    "targets": [
+      "node16-win-x64"
+    ],
+    "outputPath": "build"
+  },
+  "devDependencies": {
+    "eslint": "5.6.1",
+    "eslint-config-airbnb-base": "13.1.0",
+    "eslint-plugin-import": "2.14.0",
+    "nodemon": "^2.0.22"
+  }
+}
