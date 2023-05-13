@@ -49,10 +49,24 @@
         flex-grow: 1;
         flex-basis: 0;
         flex-shrink: 0;
+        animation: none;
       }
       #submit-button:hover {
         background-color: cornflowerblue;
         cursor: pointer;
+        /* add animation to make it pulse */
+        animation: pulse 1s infinite;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
       #clearbutton {
         padding: 5px 5px 5px 5px;
@@ -68,6 +82,7 @@
       #clearbutton:hover {
         background-color: green;
         cursor: pointer;
+        animation: pulse 1s infinite;
       }
       #deletebutton {
         padding: 5px 5px 5px 5px;
@@ -83,6 +98,7 @@
       #deletebutton:hover {
         background-color: darkred;
         cursor: pointer;
+        animation: pulse 1s infinite;
       }
       #viewbuton {
         padding: 5px 5px 5px 5px;
@@ -98,6 +114,7 @@
       #viewbuton:hover {
         background-color: yellow;
         cursor: pointer;
+        animation: pulse 1s infinite;
       }
       #aciklamabuton {
         padding: 5px 5px 5px 5px;
@@ -113,6 +130,7 @@
       #aciklamabuton:hover {
         background-color: grey;
         cursor: pointer;
+        animation: pulse 1s infinite;
       }
       #exportbuton {
         padding: 5px 5px 5px 5px;
@@ -128,6 +146,7 @@
       #exportbuton:hover {
         background-color: coral;
         cursor: pointer;
+        animation: pulse 1s infinite;
       }
       #butondiv {
         text-align: center;
