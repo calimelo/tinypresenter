@@ -259,7 +259,7 @@
     
     <div class="sticky header" id="buttongroup">
       <div id="submit-button2" onclick="cleartext()">🌱</div>
-      <div id="submit-button" onclick="handleSubmit()">🚀</div>
+      <!-- <div id="submit-button" onclick="handleSubmit()">🚀</div> -->
       <div id="submit-button3" onclick="deleteslide()">🗑</div>
       <div id="aciklamabuton" onclick="handleAciklama()">🤷</div>
       <div id="viewbuton" onclick="handleView(true)">🧐</div>
@@ -280,11 +280,13 @@
     <div id="aciklamadiv">
       <div id="aciklama"></div>
     </div>
-
+    <div id="submit-button" onclick="handleSubmit()">🚀</div>
     <div id="deck"></div>
+    
     <div id="selectdiv">
         <select id="uuidselect" onchange="handleUUIDChange()">
     </div>
+    
 
     <script type="text/javascript">
       const textarea = document.querySelector('textarea');
@@ -486,7 +488,12 @@
         xmlHttp.open('GET', myurl, false); // false for synchronous request
         xmlHttp.send(null);
         // console.log(xmlHttp.responseText);
-        const uuids= JSON.parse(xmlHttp.responseText);
+        const uuiddata= JSON.parse(xmlHttp.responseText);
+        const uuids = uuiddata.uuids;
+        const newuuid = uuiddata.newuuid;
+        if (newuuid){
+            localStorage.setItem('uuid', newuuid);
+        }
         // if it is empty, hide the select element
         if (uuids.length === 0) {
           document.querySelector('#uuidselect').style.display = 'none';

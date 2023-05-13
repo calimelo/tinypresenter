@@ -355,7 +355,11 @@ async function getUUIDS() {
 app.get('/edit/getuuids', async (req, res) => {
   const uuids = await getUUIDS();
   LD(uuids);
-  res.json(uuids);
+  let data = {
+    uuids: uuids,
+    newuuid: newuuid,
+  };
+  res.json(data);
 });
 
 // function to read pptx file
