@@ -628,4 +628,12 @@ server.listen(port || 8000, () => {
   LL(`  ${myip}:${port} \t\t=> 👁`);
   LL(`  ${myip}:${port}/edit \t=> 🖊\n`);
   LD(`slides.json: ${slides.length} bytes`);
+
+  LL('🔧');
+  LL(`  -db \tDATABASE`);
+  LL(`  -p \tPORT`);
+  LL(`  -n \tPRESENTATIONNAME`);
+  LL(`  -f \tFILENAME`);
+  LL(`  -s \tSECRET`);
+  LL(`  -d \tDEBUG\n`);
 });
